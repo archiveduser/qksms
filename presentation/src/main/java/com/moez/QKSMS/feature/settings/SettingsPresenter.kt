@@ -103,6 +103,9 @@ class SettingsPresenter @Inject constructor(
         disposables += prefs.signature.asObservable()
                 .subscribe { signature -> newState { copy(signature = signature) } }
 
+        disposables += prefs.reportSmsUrl.asObservable()
+            .subscribe { reportSmsUrl -> newState { copy(reportSmsUrl = reportSmsUrl) } }
+
         val textSizeLabels = context.resources.getStringArray(R.array.text_sizes)
         disposables += prefs.textSize.asObservable()
                 .subscribe { textSize ->
@@ -126,6 +129,12 @@ class SettingsPresenter @Inject constructor(
 
         disposables += prefs.longAsMms.asObservable()
                 .subscribe { enabled -> newState { copy(longAsMms = enabled) } }
+
+        disposables += prefs.reportSms.asObservable()
+            .subscribe { enabled -> newState { copy(reportSms = enabled) } }
+
+        disposables += prefs.extractCode.asObservable()
+            .subscribe { enabled -> newState { copy(extractCode = enabled) } }
 
         val mmsSizeLabels = context.resources.getStringArray(R.array.mms_sizes)
         val mmsSizeIds = context.resources.getIntArray(R.array.mms_sizes_ids)
@@ -180,6 +189,8 @@ class SettingsPresenter @Inject constructor(
 
                         R.id.signature -> view.showSignatureDialog(prefs.signature.get())
 
+                        R.id.reportSmsUrl -> view.showReportSmsUrlDialog(prefs.reportSmsUrl.get())
+
                         R.id.textSize -> view.showTextSizePicker()
 
                         R.id.autoColor -> {
@@ -196,6 +207,10 @@ class SettingsPresenter @Inject constructor(
                         R.id.autoDelete -> view.showAutoDeleteDialog(prefs.autoDelete.get())
 
                         R.id.longAsMms -> prefs.longAsMms.set(!prefs.longAsMms.get())
+
+                        R.id.reportSms -> prefs.reportSms.set(!prefs.reportSms.get())
+
+                        R.id.extractCode -> prefs.extractCode.set(!prefs.extractCode.get())
 
                         R.id.mmsSize -> view.showMmsSizePicker()
 
@@ -258,6 +273,11 @@ class SettingsPresenter @Inject constructor(
                 .doOnNext(prefs.signature::set)
                 .autoDisposable(view.scope())
                 .subscribe()
+
+        view.reportSmsUrlChanged()
+            .doOnNext(prefs.reportSmsUrl::set)
+            .autoDisposable(view.scope())
+            .subscribe()
 
         view.autoDeleteChanged()
                 .observeOn(Schedulers.io())

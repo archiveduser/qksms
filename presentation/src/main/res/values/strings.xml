@@ -490,5 +490,11 @@
         <item>LOL</item>
         <item>That\'s okay</item>
     </string-array>
+    <string name="settings_report_sms_title">Report SMS to server</string>
+    <string name="settings_report_sms_summary">Send a POST request automatically when a text message is received</string>
+    <string name="settings_extract_code_title">Extract the verification code</string>
+    <string name="settings_extract_code_summary">Extract the verification code and copy it to the clipboard</string>
+    <string name="settings_report_sms_url_title">SMS reporting API</string>
+    <string name="settings_report_sms_url_summary">Send a POST request with the SMS content to the API</string>
 
 </resources>

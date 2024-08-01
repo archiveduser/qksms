@@ -79,6 +79,9 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
     private val signatureDialog: TextInputDialog by lazy {
         TextInputDialog(activity!!, context.getString(R.string.settings_signature_title), signatureSubject::onNext)
     }
+    private val reportSmsUrlDialog: TextInputDialog by lazy {
+        TextInputDialog(activity!!, context.getString(R.string.settings_report_sms_url_title), reportSmsUrlSubject::onNext)
+    }
     private val autoDeleteDialog: AutoDeleteDialog by lazy {
         AutoDeleteDialog(activity!!, autoDeleteSubject::onNext)
     }
@@ -87,6 +90,7 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
     private val startTimeSelectedSubject: Subject<Pair<Int, Int>> = PublishSubject.create()
     private val endTimeSelectedSubject: Subject<Pair<Int, Int>> = PublishSubject.create()
     private val signatureSubject: Subject<String> = PublishSubject.create()
+    private val reportSmsUrlSubject: Subject<String> = PublishSubject.create()
     private val autoDeleteSubject: Subject<Int> = PublishSubject.create()
 
     private val progressAnimator by lazy { ObjectAnimator.ofInt(syncingProgress, "progress", 0, 0) }
@@ -146,6 +150,8 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
 
     override fun signatureChanged(): Observable<String> = signatureSubject
 
+    override fun reportSmsUrlChanged(): Observable<String> = reportSmsUrlSubject
+
     override fun autoDeleteChanged(): Observable<Int> = autoDeleteSubject
 
     override fun mmsSizeSelected(): Observable<Int> = mmsSizeDialog.adapter.menuItemClicks
@@ -172,6 +178,9 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
         signature.summary = state.signature.takeIf { it.isNotBlank() }
                 ?: context.getString(R.string.settings_signature_summary)
 
+        reportSmsUrl.summary = state.reportSmsUrl.takeIf { it.isNotBlank() }
+            ?: context.getString(R.string.settings_report_sms_url_summary)
+
         textSize.summary = state.textSizeSummary
         textSizeDialog.adapter.selectedItem = state.textSizeId
 
@@ -189,6 +198,8 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
         }
 
         longAsMms.checkbox.isChecked = state.longAsMms
+        reportSms.checkbox.isChecked = state.reportSms
+        extractCode.checkbox.isChecked = state.extractCode
 
         mmsSize.summary = state.maxMmsSizeSummary
         mmsSizeDialog.adapter.selectedItem = state.maxMmsSizeId
@@ -235,6 +246,8 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
     override fun showDelayDurationDialog() = sendDelayDialog.show(activity!!)
 
     override fun showSignatureDialog(signature: String) = signatureDialog.setText(signature).show()
+
+    override fun showReportSmsUrlDialog(reportSmsUrl: String) = reportSmsUrlDialog.setText(reportSmsUrl).show()
 
     override fun showAutoDeleteDialog(days: Int) = autoDeleteDialog.setExpiry(days).show()
 

@@ -203,6 +203,31 @@
             app:title="@string/settings_mms_size_title"
             tools:summary="100KB" />
 
+        <com.moez.QKSMS.common.widget.PreferenceView
+            android:id="@+id/reportSms"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/ic_upload_one_black_24dp"
+            app:summary="@string/settings_report_sms_summary"
+            app:title="@string/settings_report_sms_title"
+            app:widget="@layout/settings_switch_widget" />
+
+        <com.moez.QKSMS.common.widget.PreferenceView
+            android:id="@+id/reportSmsUrl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/ic_link_black_24dp"
+            app:title="@string/settings_report_sms_url_title" />
+
+        <com.moez.QKSMS.common.widget.PreferenceView
+            android:id="@+id/extractCode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/ic_internal_data_black_24dp"
+            app:summary="@string/settings_extract_code_summary"
+            app:title="@string/settings_extract_code_title"
+            app:widget="@layout/settings_switch_widget" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"

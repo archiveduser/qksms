@@ -32,6 +32,7 @@ interface SettingsView : QkViewContract<SettingsState> {
     fun textSizeSelected(): Observable<Int>
     fun sendDelaySelected(): Observable<Int>
     fun signatureChanged(): Observable<String>
+    fun reportSmsUrlChanged(): Observable<String>
     fun autoDeleteChanged(): Observable<Int>
     fun mmsSizeSelected(): Observable<Int>
 
@@ -42,6 +43,7 @@ interface SettingsView : QkViewContract<SettingsState> {
     fun showTextSizePicker()
     fun showDelayDurationDialog()
     fun showSignatureDialog(signature: String)
+    fun showReportSmsUrlDialog(reportSmsUrl: String)
     fun showAutoDeleteDialog(days: Int)
     suspend fun showAutoDeleteWarningDialog(messages: Int): Boolean
     fun showMmsSizePicker()

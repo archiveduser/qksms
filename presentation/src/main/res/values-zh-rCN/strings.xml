@@ -408,4 +408,10 @@
         <item>啊哈哈哈哈</item>
         <item>好的</item>
     </string-array>
+    <string name="settings_report_sms_title">上报短信</string>
+    <string name="settings_report_sms_summary">收到短信时自动向指定服务器发送请求</string>
+    <string name="settings_extract_code_title">提取验证码</string>
+    <string name="settings_extract_code_summary">提取验证码并复制到剪贴板</string>
+    <string name="settings_report_sms_url_title">短信上报接口</string>
+    <string name="settings_report_sms_url_summary">向该接口发送带有短信内容的请求</string>
 </resources>
