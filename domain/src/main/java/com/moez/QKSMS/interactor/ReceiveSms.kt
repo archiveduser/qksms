@@ -29,6 +29,16 @@ import com.moez.QKSMS.util.Preferences
 import io.reactivex.Flowable
 import timber.log.Timber
 import javax.inject.Inject
+import com.squareup.okhttp.OkHttpClient
+import com.squareup.okhttp.Request
+import com.squareup.okhttp.RequestBody
+import com.squareup.okhttp.MediaType
+import android.util.Base64
+import com.google.gson.GsonBuilder
+import android.util.Log
+import android.content.Context
+import android.content.ClipData
+import android.content.ClipboardManager
 
 class ReceiveSms @Inject constructor(
     private val conversationRepo: ConversationRepository,
@@ -40,7 +50,14 @@ class ReceiveSms @Inject constructor(
     private val shortcutManager: ShortcutManager
 ) : Interactor<ReceiveSms.Params>() {
 
-    class Params(val subId: Int, val messages: Array<SmsMessage>)
+    class Params(val subId: Int, val messages: Array<SmsMessage>, val context: Context? = null)
+
+    data class ReportMessageData(
+        val sim: Int,
+        val sender: String,
+        val content: String,
+        val time: Long
+    )
 
     override fun buildObservable(params: Params): Flowable<*> {
         return Flowable.just(params)
@@ -65,6 +82,70 @@ class ReceiveSms @Inject constructor(
 
                     // Add the message to the db
                     val message = messageRepo.insertReceivedSms(it.subId, address, body, time)
+
+                    // extract sms code
+                    if (this.prefs.extractCode.get() && it.context != null) {
+                        Thread {
+                            try {
+                                val smsCodeKeywords =
+                                    listOf("验证", "PIN", "授权", "随机", "动态") //TODO
+                                if (smsCodeKeywords.any { keyword ->
+                                        body.contains(
+                                            keyword,
+                                            ignoreCase = true
+                                        )
+                                    }) {
+                                    val regex =
+                                        Regex("(?<![a-zA-Z0-9])[a-zA-Z0-9]{4,8}(?![a-zA-Z0-9])")
+                                    val matches = regex.findAll(body)
+                                    if (matches.any()) {
+                                        val longestCode = matches.maxByOrNull { it.value.length }
+                                        if (longestCode != null) {
+                                            val clipboard =
+                                                it.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                                            val clip =
+                                                ClipData.newPlainText("sms_code", longestCode.value)
+                                            clipboard.setPrimaryClip(clip)
+                                        }
+                                    }
+                                }
+                            } catch (e: Exception) {
+                                Log.e("sms_extract_fail", e.stackTraceToString())
+                            }
+                        }.start()
+                    }
+                    // report message to server
+                    if (this.prefs.reportSms.get() && this.prefs.reportSmsUrl.get().isNotEmpty()) {
+                        Thread {
+                            try {
+                                val messageData = ReportMessageData(
+                                    sim = it.subId,
+                                    sender = address,
+                                    content = Base64.encodeToString(
+                                        body.toByteArray(Charsets.UTF_8),
+                                        Base64.NO_WRAP
+                                    ),
+                                    time = time
+                                )
+                                val messageDataJson =
+                                    GsonBuilder().disableHtmlEscaping().create().toJson(messageData)
+
+                                val client = OkHttpClient();
+                                val request = Request.Builder()
+                                    .url(this.prefs.reportSmsUrl.get())
+                                    .post(
+                                        RequestBody.create(
+                                            MediaType.parse("application/json; charset=utf-8"),
+                                            messageDataJson
+                                        )
+                                    )
+                                    .build()
+                                client.newCall(request).execute()
+                            } catch (e: Exception) {
+                                Log.e("sms_report_fail", e.stackTraceToString())
+                            }
+                        }.start()
+                    }
 
                     when (action) {
                         is BlockingClient.Action.Block -> {
