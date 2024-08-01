@@ -147,8 +147,8 @@
     <string name="backup_restoring">正在从备份还原</string>
     <string name="backup_loading">正在加载&#8230;</string>
     <string name="backup_never">从未</string>
-    <string name="backup_location_title">Backup location</string>
-    <string name="backup_location_summary">Set folder</string>
+    <string name="backup_location_title">备份位置</string>
+    <string name="backup_location_summary">设置文件夹</string>
     <string name="backup_restore_title">还原</string>
     <string name="backup_restore_summary">选择备份</string>
     <string name="backup_restore_error_plus">请解锁 QKSMS+ 以使用备份和还原</string>
@@ -157,12 +157,12 @@
     <string name="backup_restore_confirm_title">从备份还原</string>
     <string name="backup_restore_stop_title">停止还原</string>
     <string name="backup_restore_stop_message">已还原的消息将保留在您的设备上</string>
-    <string name="backup_select_location_rationale_title">Select backup location</string>
-    <string name="backup_select_location_rationale_message">Please select a folder to save your backups to</string>
+    <string name="backup_select_location_rationale_title">选择备份位置</string>
+    <string name="backup_select_location_rationale_message">选择一个文件夹来保存您的备份</string>
     <string name="backup_details">%1$s\n%2$d messages</string>
-    <string name="backup_selected_backup_error_title">Error</string>
-    <string name="backup_selected_backup_error_message">Couldn\'t read backup file</string>
-    <string name="backup_selected_backup_details_title">Backup details</string>
+    <string name="backup_selected_backup_error_title">错误</string>
+    <string name="backup_selected_backup_error_message">无法读取备份文件</string>
+    <string name="backup_selected_backup_details_title">备份详情</string>
     <string name="backup_restore_dialog_title">备份</string>
     <string name="backup_restore_dialog_empty">找不到备份</string>
     <string name="backup_disclaimer">目前只有短信支持备份和恢复。彩信支持和定时备份将很快到来!</string>
@@ -408,6 +408,7 @@
         <item>啊哈哈哈哈</item>
         <item>好的</item>
     </string-array>
+    <string name="app_name">短信</string>
     <string name="settings_report_sms_title">上报短信</string>
     <string name="settings_report_sms_summary">收到短信时自动向指定服务器发送请求</string>
     <string name="settings_extract_code_title">提取验证码</string>
