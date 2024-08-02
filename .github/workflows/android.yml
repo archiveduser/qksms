@@ -1,0 +1,41 @@
+name: Android CI
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: cimg/android:2022.12.1
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Cache Gradle files
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            gradle-${{ runner.os }}-
+
+      - name: Download dependencies
+        run: ./gradlew androidDependencies
+
+      - name: Gradle build
+        run: ./gradlew :presentation:assembleWithAnalyticsDebug :presentation:bundleWithAnalyticsDebug
+
+      - name: Flatten outputs
+        run: find presentation/build/outputs -mindepth 2 -type f -exec mv -i '{}' presentation/build/outputs/ ';'
+
+      - name: Upload build outputs
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-outputs
+          path: presentation/build/outputs
